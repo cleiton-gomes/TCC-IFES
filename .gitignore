@@ -1,0 +1,33 @@
+
+# Serviço pesado - não publicar nesta etapa
+/services/
+
+# Ambientes e dependências
+.venv/
+venv/
+node_modules/
+vendor/
+
+# Credenciais
+.env
+.env.*
+!.env.example
+
+# Cache e temporários
+__pycache__/
+*.pyc
+*.log
+
+# Modelos de IA
+*.pt
+*.onnx
+*.gguf
+
+# Bancos locais
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/

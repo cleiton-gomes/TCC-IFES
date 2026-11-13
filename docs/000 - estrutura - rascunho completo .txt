@@ -1,0 +1,67 @@
+Aluno: Cleiton Gomes dos Santos
+Professora: Dra. Karin S. Komati
+Título do Trabalho: Arquitetura IoT-Edge para Monitoramento Estático e Inspeção Móvel com Compreensão Visual-Linguística, Interação Vocal e Atuação Embarcada
+Planejamento de Tópicos do Capítulo 1: Introdução
+a) Contextualização (Termos Básicos, Fundamentação e Relevância)
+Tópico 1 — Evolução do Monitoramento para IoT e Computação de Borda (Edge Computing):
+Conceito: Transição de sistemas legados de CFTV (passivos, centralizados e dependentes de monitoramento humano contínuo) para ecossistemas distribuídos de Internet das Coisas (IoT).
+Fundamentação: Papel da Computação de Borda em mitigar a latência de rede, economizar largura de banda e permitir processamento descentralizado próximo aos sensores (câmeras fixas e vetores móveis).
+Relevância/Estatísticas: Aumento exponencial no volume global de dados de vídeo em vigilância industrial/patrimonial, tornando inviável o tráfego 100% direcionado para a nuvem.
+Tópico 2 — Ascensão da Visão Computacional Multimodal (VLM/LLM) na Compreensão Contextual:
+Conceito: Evolução dos algoritmos clássicos de detecção de objetos para Modelos de Linguagem-Visão (VLM) capazes de interpretação semântica de cena e geração de descrições em linguagem natural.
+Relevância: Capacidade de sintetizar eventos complexos (ex.: invasão de perímetro, ausência de EPI ou anomalias operacionais) e convertê-los em sentenças estruturadas e contextualizadas.
+Tópico 3 — Resposta Ativa Local via Síntese Vocal Neural (TTS) e Atuação Embarcada:
+Conceito: Integração de nó de borda atuador com Síntese Vocal Neural (Text-to-Speech — TTS) e dispositivos de intervenção física (iluminação/refletores de dissuasão).
+Relevância: Fechamento do ciclo Sensor → Inteligência → Atuação, transformando o monitoramento passivo em um agente de intervenção em tempo real no ponto de ocorrência.
+b) Descrição dos Problemas Existentes no Contexto
+Tópico 4 — Gargalos e Limitações dos Sistemas Atuais de Monitoramento e Inspeção:
+Problema 1 (Fuga de Dados e Latência de Nuvem): Sobrecarga de links de rede e custos operacionais ao transmitir fluxos contínuos de vídeo HD para a nuvem, gerando latências incompatíveis com intervenções imediatas.
+Problema 2 (Fadiga Humana e Taxa de Erro): Sobrecarga cognitiva de operadores humanos ao monitorar múltiplos mosaicos de vídeo, resultando em fadiga visual e perda de eventos críticos.
+Problema 3 (Avisos Genéricos e Ineficazes): Sirenes convencionais não transmitem a gravidade ou a instrução específica necessária para a pessoa presente no local.
+Problema 4 (Pontos Cegos e Vetores Estáticos): Câmeras fixas possuem campo de visão limitado e ausência de integração dinâmica com vetores móveis (drones) para verificação de pontos cegos.
+c) Problema Específico Abordado no TCC
+Tópico 5 — Formulação do Problema Específico:
+Formulação: Como projetar e integrar uma arquitetura IoT-Edge distribuída capaz de ingerir dados de vídeo estáticos (câmeras IP) e móveis (drones), processar a compreensão visual da cena por modelos VLM/LLM na borda e disparar respostas personalizadas em linguagem natural (via áudio sintetizado e atuação física) com baixa latência, mantendo a supervisão Human-in-the-Loop por meio de um Gêmeo Digital espacialmente consciente?
+d) Justificativa e Motivação
+Tópico 6 — Relevância Técnica, Aplicada e Acadêmica:
+Justificativa Técnica e de Engenharia: Demonstração da viabilidade de construir nós de borda robustos (ESP32-S3 com áudio I2S/PCM5102, amplificador TPA3118 e acionamento MOSFET/relé) integrados a um servidor de borda (Raspberry Pi 3B+) e a uma interface de supervisão desacoplada e de baixo consumo de recursos em Node.js.
+Justificativa Aplicada: Solução aplicável à segurança patrimonial, inspeção predial e ambientes industriais onde a intervenção contextual imediata reduz riscos e perdas materiais.
+Motivação Acadêmica: Formalização de uma arquitetura modular e replicável, servindo de base para pesquisas em robótica, agentes conversacionais e inteligência artificial embarcada.
+e) Proposta do Trabalho
+Tópico 7 — Apresentação da Arquitetura IoT-Edge Proposta:
+Módulos de Captura Heterogêneos: Ingestão de fluxos de vídeo estáticos (câmeras IP) e móveis (drone de inspeção).
+Núcleo de Inteligência e Orquestração: Servidor de borda em Python no Raspberry Pi 3B+ para processamento do pipeline VLM/LLM e síntese de voz (Piper TTS).
+Nós de Atuação Remota Embarcada: Placas personalizadas ESP32-S3 operando com receptor de eventos, áudio I2S e controle de refletores.
+Interface Operacional e Gêmeo Digital Híbrido (Human-in-the-Loop): Dashboard web em Node.js/Express e WebSockets (Socket.io) com Gêmeo Digital Híbrido, composto por visualização volumétrica 3D interativa em Three.js (70% da área) para consciência espacial global e plantas baixas 2D em miniatura em Canvas/SVG (30% da área) para precisão tática dos atuadores por andar.
+f) Objetivo Geral do Trabalho
+Tópico 8 — Declaração do Objetivo Geral:
+Texto do Objetivo: Projetar, implementar e avaliar uma Arquitetura IoT-Edge distribuída para monitoramento estático e inspeção móvel, capaz de realizar a compreensão visual-linguística de eventos via VLM, sintetizar avisos vocais contextuais em tempo real, acionar dispositivos de atuação física em nós remotos embarcados e prover consciência espacial ao operador através de um Dashboard com Gêmeo Digital Híbrido.
+
+Resposta sobre a Estrutura da Próxima Atividade e Organização dos Capítulos
+A sua dúvida sobre se terá que refazer os tópicos ou como organizar o Overleaf para a próxima entrega é fundamental.
+1. Como funciona a lógica do TCC e a próxima entrega?
+Você não precisa e não deve refazer os tópicos do zero. A lista de tópicos que você está enviando agora no Capítulo 1 é o esqueleto/sumário estruturado do TCC. O texto final do TCC é a expansão natural desses tópicos em parágrafos no LaTeX/Overleaf.
+2. Como organizar os Capítulos (Sumário Padrão de Engenharia/Ciência da Computação)?
+Você deve dividir o TCC por capítulos e subcapítulos temáticos. Não coloque tudo em um único capítulo. A estrutura padrão e recomendada para o seu trabalho no Overleaf fica assim:
+Capítulo 1: Introdução (Textos corridos gerados a partir dos itens a até f desta atividade).
+1.1 Contextualização
+1.2 Descrição dos Problemas Existentes
+1.3 O Problema Específico
+1.4 Justificativa e Motivação
+1.5 Proposta do Trabalho
+1.6 Objetivos (1.6.1 Objetivo Geral e 1.6.2 Objetivos Específicos)
+Capítulo 2: Fundamentação Teórica e Trabalhos Correlatos (O capítulo que você já tem pronto no Overleaf).
+Contém os conceitos de IoT, Edge Computing, VLM/LLM, TTS Neural (Piper), Comunicação (MQTT/WebSockets), Gêmeos Digitais e revisão da literatura.
+Capítulo 3: Metodologia e Materiais/Métodos (Ou Arquitetura do Sistema)
+3.1 Visão Geral da Arquitetura IoT-Edge
+3.2 Hardware dos Nós de Atuação Embarcada (ESP32-S3, PCM5102, TPA3118)
+3.3 Servidor de Borda e Pipeline de IA (Raspberry Pi 3B+, VLM, Piper TTS)
+3.4 Dashboard Web e Gêmeo Digital Híbrido (Node.js, Socket.io, Three.js 3D/2D)
+3.5 Metodologia de Testes e Validação
+3. O que incluir no PDF do Overleaf para a Próxima Atividade?
+A próxima tarefa pede o PDF completo do Overleaf contendo:
+O Capítulo 1 redigido em texto corrido (expandindo a lista de tópicos acima).
+O Capítulo 2 (que você mencionou que já está 100% pronto no Overleaf).
+A Lista de Referências Bibliográficas (.bib).
+Basta compilar o projeto no Overleaf com esses capítulos ativados no main.tex e enviar o PDF gerado na plataforma!
+
