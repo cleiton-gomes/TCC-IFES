@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -209,6 +210,20 @@
         .hover-white { transition: color .2s ease; }
         .hover-white:hover { color: #fff !important; }
 
+        .form-check-input {
+            background-color: #1e293b;
+            border-color: rgba(255, 255, 255, .25);
+        }
+
+        .form-check-input:checked {
+            background-color: #2563eb;
+            border-color: #2563eb;
+        }
+
+        .form-check-label {
+            cursor: pointer;
+        }
+
         /* Modal de cadastro */
         .modal-content-dark {
             color: #f8fafc;
@@ -264,19 +279,55 @@
         <p class="brand-caption mb-4">Inspeção Móvel &amp; Monitoramento Inteligente</p>
 
         <div class="demo-note mb-4" role="note">
-            <i class="fa-solid fa-circle-info text-warning mt-1" aria-hidden="true"></i>
+            <i class="fa-solid fa-shield-halved text-info mt-1" aria-hidden="true"></i>
             <div>
-                <strong>Modo demonstrativo.</strong> A autenticação ainda não está conectada ao banco de dados. O login abaixo apenas simula o acesso até a implementação do back-end.
+                <strong>Acesso protegido.</strong>
+                Entre com suas credenciais cadastradas para acessar o IoT-Edge Command Center.
             </div>
         </div>
 
-        <form id="loginForm" onsubmit="handleLogin(event)" autocomplete="on">
+        <!-- Formulário de autenticação processado pelo CodeIgniter Shield -->
+        <form
+            id="loginForm"
+            action="<?= url_to('login') ?>"
+            method="post"
+            autocomplete="on"
+        >
+            <?= csrf_field() ?>
+
+            <!-- Mensagens de autenticação e validação -->
+            <?php if (session('error') !== null): ?>
+                <div class="alert alert-danger py-2 small text-start" role="alert">
+                    <i class="fa-solid fa-circle-exclamation me-1" aria-hidden="true"></i>
+                    <?= esc(session('error')) ?>
+                </div>
+            <?php elseif (session('errors') !== null): ?>
+                <div class="alert alert-danger py-2 small text-start" role="alert">
+                    <i class="fa-solid fa-circle-exclamation me-1" aria-hidden="true"></i>
+
+                    <?php if (is_array(session('errors'))): ?>
+                        <?php foreach (session('errors') as $error): ?>
+                            <div><?= esc($error) ?></div>
+                        <?php endforeach ?>
+                    <?php else: ?>
+                        <?= esc(session('errors')) ?>
+                    <?php endif ?>
+                </div>
+            <?php endif ?>
+
+            <?php if (session('message') !== null): ?>
+                <div class="alert alert-success py-2 small text-start" role="status">
+                    <?= esc(session('message')) ?>
+                </div>
+            <?php endif ?>
+
             <div class="mb-3 text-start">
                 <label for="email" class="form-label">E-mail</label>
                 <div class="input-group">
                     <span class="input-group-text" aria-hidden="true">
                         <i class="fa-solid fa-envelope"></i>
                     </span>
+
                     <input
                         type="email"
                         id="email"
@@ -285,17 +336,19 @@
                         placeholder="voce@exemplo.com"
                         autocomplete="username"
                         maxlength="190"
+                        value="<?= esc(old('email') ?? '', 'attr') ?>"
                         required
                     >
                 </div>
             </div>
 
-            <div class="mb-4 text-start">
+            <div class="mb-3 text-start">
                 <label for="password" class="form-label">Senha de acesso</label>
                 <div class="input-group">
                     <span class="input-group-text" aria-hidden="true">
                         <i class="fa-solid fa-lock"></i>
                     </span>
+
                     <input
                         type="password"
                         id="password"
@@ -305,6 +358,7 @@
                         autocomplete="current-password"
                         required
                     >
+
                     <button
                         type="button"
                         class="btn password-toggle"
@@ -317,16 +371,31 @@
                 </div>
             </div>
 
+            <!-- Opção de manter a sessão -->
+            <div class="form-check text-start mb-4">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="remember"
+                    id="remember"
+                    value="1"
+                    <?= old('remember') ? 'checked' : '' ?>
+                >
+
+                <label class="form-check-label text-secondary small" for="remember">
+                    Manter minha sessão iniciada
+                </label>
+            </div>
+
             <button type="submit" class="btn btn-primary-neon w-100 mb-3">
                 <i class="fa-solid fa-right-to-bracket me-2" aria-hidden="true"></i>
                 Acessar Painel Tático
             </button>
         </form>
 
-        <div id="loginMessage" class="alert alert-danger py-2 small d-none text-start" role="alert" aria-live="polite"></div>
-
         <div class="pt-3 mt-3 border-top border-secondary border-opacity-25">
             <p class="text-secondary small mb-2">Ainda não possui acesso ao sistema?</p>
+
             <button
                 type="button"
                 class="btn-register"
@@ -336,17 +405,21 @@
                 <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
                 Solicitar acesso / Cadastrar usuário
             </button>
+
             <p class="form-hint text-center mb-0 mt-2">
                 O perfil definitivo é atribuído após a aprovação do administrador.
             </p>
         </div>
 
         <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top border-secondary border-opacity-25 login-footer">
-            <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25">v2.4 IoT-Edge</span>
+            <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25">
+                v2.4 IoT-Edge
+            </span>
+
             <a
                 href="<?= esc(site_url('videomonitoramento')) ?>"
                 class="text-secondary text-decoration-none small hover-white"
-                title="Abrir a tela demonstrativa sem autenticação real"
+                title="Abrir a tela demonstrativa"
             >
                 Abrir simulação
                 <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i>
@@ -354,29 +427,50 @@
         </div>
     </main>
 
-    <!-- Modal de solicitação de cadastro. Neste momento, o formulário é somente demonstrativo. -->
-    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <!-- Modal de solicitação de cadastro: ainda demonstrativo -->
+    <div
+        class="modal fade"
+        id="registerModal"
+        tabindex="-1"
+        aria-labelledby="registerModalLabel"
+        aria-hidden="true"
+    >
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content modal-content-dark">
                 <div class="modal-header px-4 pt-4">
                     <div>
                         <h2 class="modal-title h5 fw-bold" id="registerModalLabel">
-                            <i class="fa-solid fa-user-plus text-info me-2" aria-hidden="true"></i>Solicitar acesso
+                            <i class="fa-solid fa-user-plus text-info me-2" aria-hidden="true"></i>
+                            Solicitar acesso
                         </h2>
-                        <p class="text-secondary small mb-0 mt-1">Preencha seus dados para solicitar uma conta.</p>
+
+                        <p class="text-secondary small mb-0 mt-1">
+                            Preencha seus dados para solicitar uma conta.
+                        </p>
                     </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Fechar"
+                    ></button>
                 </div>
 
                 <div class="modal-body px-4 py-3">
                     <div class="demo-note mb-3">
                         <i class="fa-solid fa-circle-info text-warning mt-1" aria-hidden="true"></i>
-                        <div>Este formulário ainda não grava os dados. A persistência e a aprovação serão implementadas na etapa de back-end.</div>
+
+                        <div>
+                            Este formulário ainda não grava os dados.
+                            A persistência e a aprovação serão implementadas na etapa de back-end.
+                        </div>
                     </div>
 
                     <form id="registerForm" onsubmit="handleRegister(event)" novalidate>
                         <div class="mb-3">
                             <label for="registerName" class="form-label">Nome completo</label>
+
                             <input
                                 type="text"
                                 id="registerName"
@@ -388,11 +482,15 @@
                                 maxlength="120"
                                 required
                             >
-                            <div class="invalid-feedback">Informe seu nome (mínimo de 3 caracteres).</div>
+
+                            <div class="invalid-feedback">
+                                Informe seu nome (mínimo de 3 caracteres).
+                            </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="registerEmail" class="form-label">E-mail</label>
+
                             <input
                                 type="email"
                                 id="registerEmail"
@@ -403,11 +501,15 @@
                                 maxlength="190"
                                 required
                             >
-                            <div class="invalid-feedback">Informe um endereço de e-mail válido.</div>
+
+                            <div class="invalid-feedback">
+                                Informe um endereço de e-mail válido.
+                            </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="registerPassword" class="form-label">Criar senha</label>
+
                             <div class="input-group">
                                 <input
                                     type="password"
@@ -419,6 +521,7 @@
                                     minlength="8"
                                     required
                                 >
+
                                 <button
                                     type="button"
                                     class="btn password-toggle"
@@ -429,11 +532,17 @@
                                     <i class="fa-solid fa-eye" aria-hidden="true"></i>
                                 </button>
                             </div>
-                            <div class="invalid-feedback">A senha deve ter pelo menos 8 caracteres.</div>
+
+                            <div class="invalid-feedback">
+                                A senha deve ter pelo menos 8 caracteres.
+                            </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="registerPasswordConfirm" class="form-label">Confirmar senha</label>
+                            <label for="registerPasswordConfirm" class="form-label">
+                                Confirmar senha
+                            </label>
+
                             <input
                                 type="password"
                                 id="registerPasswordConfirm"
@@ -444,32 +553,74 @@
                                 minlength="8"
                                 required
                             >
-                            <div class="invalid-feedback" id="confirmPasswordFeedback">As senhas devem ser iguais.</div>
+
+                            <div class="invalid-feedback" id="confirmPasswordFeedback">
+                                As senhas devem ser iguais.
+                            </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="requestedProfile" class="form-label">Perfil solicitado</label>
-                            <select id="requestedProfile" name="perfil_solicitado" class="form-select form-select-dark" required>
-                                <option value="" selected disabled>Selecione o perfil desejado</option>
-                                <option value="visualizador">Visualizador — consulta dashboards, leituras e eventos</option>
-                                <option value="operador">Operador — monitoramento e operações autorizadas</option>
+                            <label for="requestedProfile" class="form-label">
+                                Perfil solicitado
+                            </label>
+
+                            <select
+                                id="requestedProfile"
+                                name="perfil_solicitado"
+                                class="form-select form-select-dark"
+                                required
+                            >
+                                <option value="" selected disabled>
+                                    Selecione o perfil desejado
+                                </option>
+
+                                <option value="visualizador">
+                                    Visualizador — consulta dashboards, leituras e eventos
+                                </option>
+
+                                <option value="operador">
+                                    Operador — monitoramento e operações autorizadas
+                                </option>
                             </select>
-                            <div class="invalid-feedback">Selecione o perfil solicitado.</div>
-                            <div class="form-hint">O perfil informado é apenas uma solicitação. O administrador fará a atribuição definitiva. O perfil Administrador não pode ser solicitado por este formulário.</div>
+
+                            <div class="invalid-feedback">
+                                Selecione o perfil solicitado.
+                            </div>
+
+                            <div class="form-hint">
+                                O perfil informado é apenas uma solicitação.
+                                O administrador fará a atribuição definitiva.
+                                O perfil Administrador não pode ser solicitado por este formulário.
+                            </div>
                         </div>
 
                         <div class="profile-info mb-3">
                             <i class="fa-solid fa-shield-halved text-info me-1" aria-hidden="true"></i>
-                            Para proteger o sistema, os privilégios são concedidos pelo administrador. Enviar esta solicitação não cria uma conta nem libera o acesso nesta versão demonstrativa.
+
+                            Para proteger o sistema, os privilégios são concedidos pelo administrador.
+                            Enviar esta solicitação não cria uma conta nem libera o acesso nesta versão demonstrativa.
                         </div>
 
-                        <div id="registerMessage" class="alert py-2 small d-none" role="status" aria-live="polite"></div>
+                        <div
+                            id="registerMessage"
+                            class="alert py-2 small d-none"
+                            role="status"
+                            aria-live="polite"
+                        ></div>
 
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary-neon">
-                                <i class="fa-solid fa-paper-plane me-2" aria-hidden="true"></i>Enviar solicitação demonstrativa
+                                <i class="fa-solid fa-paper-plane me-2" aria-hidden="true"></i>
+                                Enviar solicitação demonstrativa
                             </button>
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal"
+                            >
+                                Cancelar
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -478,42 +629,16 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         'use strict';
 
-        const videoMonitoramentoUrl = <?= json_encode(site_url('videomonitoramento'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
-
-        function handleLogin(event) {
-            event.preventDefault();
-
-            const form = event.currentTarget;
-            const email = document.getElementById('email');
-            const password = document.getElementById('password');
-            const message = document.getElementById('loginMessage');
-
-            message.classList.add('d-none');
-            message.textContent = '';
-
-            if (!form.checkValidity()) {
-                form.reportValidity();
-                return;
-            }
-
-            if (!email.value.trim() || !password.value) {
-                message.textContent = 'Preencha o e-mail e a senha.';
-                message.classList.remove('d-none');
-                return;
-            }
-
-            /*
-             * MODO DEMONSTRATIVO:
-             * este redirecionamento não autentica o usuário e não valida
-             * a senha no banco. Na etapa de back-end, o formulário será
-             * enviado ao controller de autenticação e só seguirá após
-             * a validação das credenciais e criação da sessão.
-             */
-            window.location.href = videoMonitoramentoUrl;
-        }
+        /*
+         * O formulário principal de login não utiliza JavaScript
+         * para autenticar ou redirecionar o usuário.
+         *
+         * A autenticação é processada pelo CodeIgniter Shield.
+         */
 
         function handleRegister(event) {
             event.preventDefault();
@@ -553,9 +678,11 @@
 
             if (confirmPassword.value.length < 8 || confirmPassword.value !== password.value) {
                 confirmPassword.classList.add('is-invalid');
+
                 feedback.textContent = confirmPassword.value !== password.value
                     ? 'As senhas informadas não são iguais.'
                     : 'Confirme a senha com pelo menos 8 caracteres.';
+
                 valid = false;
             }
 
@@ -571,22 +698,34 @@
                 return;
             }
 
-            /* Nenhum dado é persistido nesta versão de interface. */
-            message.textContent = 'Demonstração concluída: os dados foram validados apenas no navegador, mas nenhum cadastro foi gravado. Na etapa de back-end, a solicitação será registrada e dependerá de aprovação.';
+            /*
+             * Cadastro ainda demonstrativo.
+             * Nenhum dado é enviado ou persistido.
+             */
+            message.textContent =
+                'Demonstração concluída: os dados foram validados apenas no navegador, mas nenhum cadastro foi gravado. Na etapa de back-end, a solicitação será registrada e dependerá de aprovação.';
+
             message.classList.add('alert-info');
             message.classList.remove('d-none');
         }
 
         function togglePassword(inputId, button) {
             const input = document.getElementById(inputId);
+
             if (!input) return;
 
             const isShowing = input.type === 'text';
+
             input.type = isShowing ? 'password' : 'text';
+
             button.setAttribute('aria-pressed', String(!isShowing));
-            button.setAttribute('aria-label', isShowing ? 'Mostrar senha' : 'Ocultar senha');
+            button.setAttribute(
+                'aria-label',
+                isShowing ? 'Mostrar senha' : 'Ocultar senha'
+            );
 
             const icon = button.querySelector('i');
+
             if (icon) {
                 icon.classList.toggle('fa-eye', isShowing);
                 icon.classList.toggle('fa-eye-slash', !isShowing);
@@ -599,7 +738,10 @@
 
         document.querySelectorAll('[data-toggle-password]').forEach((button) => {
             button.addEventListener('click', function () {
-                togglePassword(this.getAttribute('data-toggle-password'), this);
+                togglePassword(
+                    this.getAttribute('data-toggle-password'),
+                    this
+                );
             });
         });
     </script>

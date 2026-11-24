@@ -1,3 +1,4 @@
+
 <?php
 /**
  * Layout compartilhado do IoT-Edge Command Center.
@@ -17,12 +18,33 @@ if ($tituloPagina === '') {
     $tituloPagina = 'Painel';
 }
 
-// Dados da sessão. Valores alternativos enquanto
-// a autenticação definitiva não estiver implementada.
-$usuarioNome = session()->get('nome');
+// Dados do usuário autenticado pelo CodeIgniter Shield.
+$usuario = auth()->user();
 
-if (!is_string($usuarioNome) || trim($usuarioNome) === '') {
-    $usuarioNome = 'Operador';
+$usuarioNome = 'Visitante';
+$usuarioEmail = '';
+$usuarioPerfil = 'Visitante';
+
+if ($usuario !== null) {
+    // Identificação da conta.
+    $usuarioNome = trim((string) ($usuario->username ?? ''));
+
+    if ($usuarioNome === '') {
+        $usuarioNome = $usuario->getEmail() ?? 'Usuário';
+    }
+
+    $usuarioEmail = $usuario->getEmail() ?? '';
+
+    // Identificação do grupo/perfil.
+    if ($usuario->inGroup('administrador')) {
+        $usuarioPerfil = 'Administrador';
+    } elseif ($usuario->inGroup('operador')) {
+        $usuarioPerfil = 'Operador';
+    } elseif ($usuario->inGroup('visualizador')) {
+        $usuarioPerfil = 'Visualizador';
+    } else {
+        $usuarioPerfil = 'Usuário';
+    }
 }
 
 // Identifica quais links devem ficar destacados.
@@ -233,7 +255,7 @@ $rotasHistorico = ['historico'];
             background-color: var(--iot-surface);
             border: 1px solid var(--iot-border);
             border-radius: 10px;
-            min-width: 220px;
+            min-width: 240px;
         }
 
         .navbar-dark-custom .dropdown-item {
@@ -520,7 +542,7 @@ $rotasHistorico = ['historico'];
                             aria-expanded="false"
                         >
                             <i class="fa-solid fa-user-gear me-1 text-info"></i>
-                            <?= esc($usuarioNome) ?>
+                            <?= esc($usuarioPerfil) ?>
                         </button>
 
                         <ul
@@ -541,19 +563,47 @@ $rotasHistorico = ['historico'];
                                 </span>
                             </li>
 
+                            <?php if ($usuarioEmail !== ''): ?>
+                                <li>
+                                    <span class="dropdown-item-text text-secondary small">
+                                        <i class="fa-solid fa-envelope me-2"></i>
+                                        <?= esc($usuarioEmail) ?>
+                                    </span>
+                                </li>
+                            <?php endif; ?>
+
+                            <li>
+                                <span class="dropdown-item-text text-secondary small">
+                                    <i class="fa-solid fa-shield-halved me-2"></i>
+                                    Perfil: <?= esc($usuarioPerfil) ?>
+                                </span>
+                            </li>
+
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
 
-                            <li>
-                                <a
-                                    class="dropdown-item"
-                                    href="<?= site_url('login') ?>"
-                                >
-                                    <i class="fa-solid fa-right-from-bracket me-2"></i>
-                                    Tela de login
-                                </a>
-                            </li>
+                            <?php if ($usuario !== null): ?>
+                                <li>
+                                    <a
+                                        class="dropdown-item"
+                                        href="<?= site_url('logout') ?>"
+                                    >
+                                        <i class="fa-solid fa-right-from-bracket me-2"></i>
+                                        Sair
+                                    </a>
+                                </li>
+                            <?php else: ?>
+                                <li>
+                                    <a
+                                        class="dropdown-item"
+                                        href="<?= site_url('login') ?>"
+                                    >
+                                        <i class="fa-solid fa-right-to-bracket me-2"></i>
+                                        Entrar
+                                    </a>
+                                </li>
+                            <?php endif; ?>
 
                         </ul>
 
